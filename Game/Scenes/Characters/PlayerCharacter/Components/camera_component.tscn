@@ -1,0 +1,23 @@
+[gd_scene load_steps=4 format=3 uid="uid://cthcanx681lhu"]
+
+[ext_resource type="Script" uid="uid://011ltvwpx1me" path="res://Game/Scenes/Characters/PlayerCharacter/Components/CameraComponent.cs" id="1_snkvt"]
+[ext_resource type="Script" uid="uid://c45lxt4031lyi" path="res://Game/Scenes/Characters/PlayerCharacter/Components/SmoothCameraArm.cs" id="2_phk0k"]
+
+[sub_resource type="SeparationRayShape3D" id="SeparationRayShape3D_vbhg7"]
+
+[node name="CameraComponent" type="Node3D"]
+script = ExtResource("1_snkvt")
+
+[node name="SmoothCameraArm" type="SpringArm3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.90630776, 0.42261827, 0, -0.42261827, 0.90630776, 0, 0, 0)
+shape = SubResource("SeparationRayShape3D_vbhg7")
+spring_length = 5.0
+script = ExtResource("2_phk0k")
+
+[node name="Camera3D" type="Camera3D" parent="SmoothCameraArm"]
+
+[node name="HorizontalPivot" type="Node3D" parent="."]
+
+[node name="VerticalPivot" type="Node3D" parent="HorizontalPivot"]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0.5, 0)

@@ -1,0 +1,133 @@
+[gd_scene load_steps=8 format=3 uid="uid://b5evq5fwxet4"]
+
+[ext_resource type="Material" uid="uid://blcpsilhkfii0" path="res://Game/Resources/Materials/dark_proto.tres" id="1_rjjnu"]
+[ext_resource type="Material" uid="uid://clkok7jgljb5l" path="res://Game/Resources/Materials/orange_proto.tres" id="2_6wmdx"]
+[ext_resource type="Material" uid="uid://dm4nsv2r1fnum" path="res://Game/Resources/Materials/purple_proto.tres" id="3_6wmdx"]
+[ext_resource type="PackedScene" uid="uid://t6aywbqoy8fu" path="res://Game/Scenes/Characters/PlayerCharacter/player_character.tscn" id="4_6wmdx"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_01gkh"]
+sky_top_color = Color(0.30926314, 0.4532054, 0.6698637, 1)
+sky_horizon_color = Color(0.7704334, 0.599084, 0.70074445, 1)
+ground_bottom_color = Color(0.17582008, 0.19664574, 0.23907697, 1)
+ground_horizon_color = Color(0.25873128, 0.26278794, 0.27495763, 1)
+
+[sub_resource type="Sky" id="Sky_laqd5"]
+sky_material = SubResource("ProceduralSkyMaterial_01gkh")
+
+[sub_resource type="Environment" id="Environment_0e40a"]
+background_mode = 2
+sky = SubResource("Sky_laqd5")
+tonemap_mode = 2
+glow_enabled = true
+
+[node name="Main" type="Node3D"]
+
+[node name="Environment" type="Node" parent="."]
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="Environment"]
+transform = Transform3D(-0.8660254, -0.43301278, 0.25, 0, 0.49999997, 0.86602545, -0.50000006, 0.75, -0.43301266, 0, 0, 0)
+shadow_enabled = true
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="Environment"]
+environment = SubResource("Environment_0e40a")
+
+[node name="Level" type="Node" parent="."]
+
+[node name="Floor" type="CSGBox3D" parent="Level"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0)
+use_collision = true
+size = Vector3(100, 1, 100)
+material = ExtResource("1_rjjnu")
+
+[node name="CSGBox3D" type="CSGBox3D" parent="Level"]
+transform = Transform3D(4.3678756, 0, -4.063373, 0, 4.996833, 0, 5.0563064, 0, 3.510133, 36.55729, 2.4745865, -28.26103)
+use_collision = true
+size = Vector3(2.734375, 1, 1)
+material = ExtResource("2_6wmdx")
+
+[node name="CSGBox3D4" type="CSGBox3D" parent="Level"]
+transform = Transform3D(6.6816597, 0, 0, 0, 4.9968333, 0, 0, 0, 5.369547, -10.025752, 2.4745865, 23.267311)
+use_collision = true
+size = Vector3(4.0009766, 1, 1)
+material = ExtResource("2_6wmdx")
+
+[node name="CSGBox3D5" type="CSGBox3D" parent="Level"]
+transform = Transform3D(-2.920646e-07, 0, 5.369547, 0, 4.996833, 0, -6.6816597, 0, -2.3471036e-07, -20.68329, 2.4745865, 7.2141304)
+use_collision = true
+size = Vector3(4.0009766, 1, 1)
+material = ExtResource("2_6wmdx")
+
+[node name="CSGBox3D3" type="CSGBox3D" parent="Level"]
+transform = Transform3D(6.6816597, 0, 0, 0, 4.9968333, 0, 0, 0, 5.369547, -5.7838526, 11.1878605, -35.293205)
+use_collision = true
+size = Vector3(7.723694, 4.865631, 1.4931641)
+material = ExtResource("2_6wmdx")
+
+[node name="CSGBox3D13" type="CSGBox3D" parent="Level/CSGBox3D3"]
+transform = Transform3D(1, 0, 0, 0, 0.9999999, 0, 0, 0, 1, 0, -1.0784682, 0.144166)
+operation = 2
+size = Vector3(2.9023438, 2.7086945, 2.3112793)
+material = ExtResource("2_6wmdx")
+
+[node name="CSGBox3D2" type="CSGBox3D" parent="Level"]
+transform = Transform3D(6.6816597, 0, 0, 0, 4.9968333, 0, 0, 0, 5.369547, -38.25107, 7.2423778, 11.714069)
+use_collision = true
+size = Vector3(1, 2.9083252, 10.304016)
+material = ExtResource("2_6wmdx")
+
+[node name="CSGBox3D13" type="CSGBox3D" parent="Level"]
+transform = Transform3D(-4.410432, -0.6590302, 3.9709206, -1.323928e-07, 4.9192133, 0.94274694, -5.0192275, 0.5790946, -3.489276, 18.128073, -0.0431962, -12.660097)
+use_collision = true
+size = Vector3(1, 1, 5.2974243)
+material = ExtResource("2_6wmdx")
+
+[node name="CSGBox3D6" type="CSGBox3D" parent="Level"]
+transform = Transform3D(6.6816597, 0, 0, 0, 4.9968333, 0, 0, 0, 5.369547, 47.969955, 6.339325, 27.127542)
+use_collision = true
+size = Vector3(0.11230469, 2.546875, 5.7929077)
+material = ExtResource("2_6wmdx")
+
+[node name="CSGBox3D7" type="CSGBox3D" parent="Level"]
+transform = Transform3D(6.6816597, 0, 0, 0, 4.9968333, 0, 0, 0, 5.369547, 16.113855, 6.339325, 27.127542)
+use_collision = true
+size = Vector3(0.11230469, 2.546875, 5.7929077)
+material = ExtResource("2_6wmdx")
+
+[node name="CSGBox3D8" type="CSGBox3D" parent="Level"]
+transform = Transform3D(-2.920646e-07, 0, -5.369547, 0, 4.996833, 0, 6.6816597, 0, -2.3471036e-07, 32.046593, 6.339325, 42.28798)
+use_collision = true
+size = Vector3(0.11230469, 2.546875, 5.7929077)
+material = ExtResource("2_6wmdx")
+
+[node name="CSGBox3D9" type="CSGBox3D" parent="Level"]
+transform = Transform3D(-2.920646e-07, 0, -5.369547, 0, 4.996833, 0, 6.6816597, 0, -2.3471036e-07, 32.046593, 6.339325, 11.94255)
+use_collision = true
+size = Vector3(0.11230469, 2.546875, 5.7929077)
+material = ExtResource("2_6wmdx")
+
+[node name="CSGBox3D10" type="CSGBox3D" parent="Level/CSGBox3D9"]
+transform = Transform3D(0.9999728, 0, 0, 0, 0.9999396, 0, 2.7462477e-12, 0, 1, 0.015258193, -0.6403625, 0.0001540184)
+operation = 2
+size = Vector3(0.29614258, 1.2661133, 0.9948406)
+material = ExtResource("2_6wmdx")
+
+[node name="CSGBox3D10" type="CSGBox3D" parent="Level"]
+transform = Transform3D(0.98625386, 0.16523694, 0, -0.16523694, 0.98625386, 0, 0, 0, 1, 33.64282, 1.5342401, 39.88034)
+material_override = ExtResource("3_6wmdx")
+use_collision = true
+size = Vector3(28.90387, 0.25, 4.0341797)
+
+[node name="CSGBox3D11" type="CSGBox3D" parent="Level"]
+transform = Transform3D(0.99999994, 0, 0, 0, 0.99999994, 0, 0, 0, 1, 17.789244, 3.9243183, 39.881664)
+use_collision = true
+size = Vector3(3.2350006, 0.25, 4.0390625)
+material = ExtResource("3_6wmdx")
+
+[node name="CSGBox3D12" type="CSGBox3D" parent="Level"]
+transform = Transform3D(0.9999999, 0, 0, 0, 0.9469355, -0.32142287, 0, 0.32142287, 0.94693553, 17.789244, 8.235627, 25.1807)
+use_collision = true
+size = Vector3(3.2350006, 0.25, 27.234802)
+material = ExtResource("3_6wmdx")
+
+[node name="PlayerCharacter" parent="." instance=ExtResource("4_6wmdx")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
