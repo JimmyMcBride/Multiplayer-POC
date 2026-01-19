@@ -3,7 +3,7 @@ using MultiplayerPOC.Game.Globals.Constants;
 using MultiplayerPOC.Game.Scenes.Characters.PlayerCharacter;
 using MultiplayerPOC.Game.Scenes.Characters.PlayerCharacter.States;
 
-public partial class Land : State
+public partial class Land : PlayerState
 {
     public override void PhysicsUpdate(double delta)
     {

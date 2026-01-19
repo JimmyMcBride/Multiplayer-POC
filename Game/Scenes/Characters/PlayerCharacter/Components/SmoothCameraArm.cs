@@ -1,6 +1,5 @@
 using Godot;
 using MultiplayerPOC.Game.Globals.Constants;
-using MultiplayerPOC.Game.Scenes.Characters.PlayerCharacter.Interfaces;
 
 namespace MultiplayerPOC.Game.Scenes.Characters.PlayerCharacter.Components;
 
@@ -10,7 +9,7 @@ public partial class SmoothCameraArm : SpringArm3D
     private const float MaxVerticalOffset = 0.25f;
     private const float OffsetLerpSpeed = 4f;
 
-    private ICharacterController _characterController;
+    private PlayerCharacter _characterController;
     private Vector3 _currentLocalOffset = Vector3.Zero; // x = right, z = forward/back
     private Node3D _verticalPivot;
 
@@ -21,7 +20,7 @@ public partial class SmoothCameraArm : SpringArm3D
         InputAction.Backward
     );
 
-    public void Initialize(ICharacterController controller)
+    public void Initialize(PlayerCharacter controller)
     {
         _characterController = controller;
     }
@@ -34,7 +33,7 @@ public partial class SmoothCameraArm : SpringArm3D
         {
             var current = GetParent();
             while (current != null && _characterController == null)
-                if (current is ICharacterController controller)
+                if (current is PlayerCharacter controller)
                     _characterController = controller;
                 else
                     current = current.GetParent();

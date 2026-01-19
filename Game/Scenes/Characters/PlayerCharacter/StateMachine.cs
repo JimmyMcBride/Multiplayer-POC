@@ -1,58 +1,43 @@
 using System.Collections.Generic;
 using Godot;
-using MultiplayerPOC.Engine.Core;
-using MultiplayerPOC.Game.Scenes.Characters.PlayerCharacter.Interfaces;
 
 namespace MultiplayerPOC.Game.Scenes.Characters.PlayerCharacter;
 
 public partial class StateMachine : Node
 {
-    private readonly Dictionary<string, State> _states = new();
+    private readonly Dictionary<string, PlayerState> _states = new();
 
-    [Export] public State DefaultState;
-    public State CurrentState { get; private set; }
+    [Export] public Node DefaultStateNode;
+    public PlayerState CurrentState { get; private set; }
 
-    public void Initialize(ICharacterController controller)
+    public void Initialize(PlayerCharacter controller)
     {
+        _states.Clear();
+
         foreach (var child in GetChildren())
-            if (child is State s)
-            {
-                _states[s.Name] = s;
-                s.Initialize(controller);
-            }
-
-        if (DefaultState == null) return;
-
-        CurrentState = DefaultState;
-        CurrentState.Enter(null);
-        Log.Info($"Initial state set to {DefaultState.Name}");
-    }
-
-    public T GetState<T>() where T : State
-    {
-        foreach (var state in _states.Values)
-            if (state is T typedState)
-                return typedState;
-
-        Log.Warning($"State of type {typeof(T).Name} not found");
-        return null;
-    }
-
-    public void ChangeState<T>() where T : State
-    {
-        var state = GetState<T>();
-        if (state == null)
         {
-            Log.Error($"Attempted to change to state of type {typeof(T).Name}, but it was not found");
-            return;
+            if (child is not PlayerState state) continue;
+            _states[child.Name] = state;
+            state.Initialize(controller);
         }
 
-        var previousState = CurrentState;
-        CurrentState?.Exit();
-        CurrentState = state;
-        state.Enter(previousState);
+        if (DefaultStateNode is not PlayerState defaultState) return;
+        CurrentState = defaultState;
+        CurrentState.Enter(null);
+    }
 
-        Log.Info($"State successfully changed from {previousState.Name} to {state.Name}");
+    public void ChangeState<T>() where T : PlayerState
+    {
+        foreach (var s in _states.Values)
+        {
+            if (s is not T next) continue;
+
+            var prev = CurrentState;
+            CurrentState?.Exit();
+            CurrentState = next;
+            CurrentState.Enter(prev);
+            return;
+        }
     }
 
     public override void _Process(double d)

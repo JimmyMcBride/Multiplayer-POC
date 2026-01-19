@@ -1,7 +1,6 @@
 using Godot;
 using MultiplayerPOC.Engine.Godot;
 using MultiplayerPOC.Game.Globals.Constants;
-using MultiplayerPOC.Game.Scenes.Characters.PlayerCharacter.Interfaces;
 
 namespace MultiplayerPOC.Game.Scenes.Characters.PlayerCharacter.Components;
 
@@ -24,7 +23,7 @@ public partial class CameraComponent : Node3D
         _cameraArm = GetNode<SmoothCameraArm>("SmoothCameraArm");
     }
 
-    public void Initialize(ICharacterController controller)
+    public void Initialize(PlayerCharacter controller)
     {
         _cameraArm.Initialize(controller);
     }

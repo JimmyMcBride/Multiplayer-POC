@@ -5,7 +5,7 @@
 [ext_resource type="Script" uid="uid://cvjhaha8xldka" path="res://Game/Scenes/Characters/PlayerCharacter/Components/MovementComponent.cs" id="3_exhmk"]
 [ext_resource type="Script" uid="uid://cy7qdk5hw50ut" path="res://Game/Scenes/Characters/PlayerCharacter/StateMachine.cs" id="3_naj1k"]
 [ext_resource type="Script" uid="uid://difl5rjb0p104" path="res://Game/Scenes/Characters/PlayerCharacter/States/Move.cs" id="4_asygv"]
-[ext_resource type="Script" uid="uid://dv7ssuskb8iw1" path="res://Game/Scenes/Characters/PlayerCharacter/State.cs" id="5_exhmk"]
+[ext_resource type="Script" uid="uid://dv7ssuskb8iw1" path="res://Game/Scenes/Characters/PlayerCharacter/PlayerState.cs" id="6_8uxjv"]
 [ext_resource type="Script" uid="uid://cyok70na50avm" path="res://Game/Scenes/Characters/PlayerCharacter/States/Idle.cs" id="6_x4iks"]
 [ext_resource type="Script" uid="uid://dtktjt2tk2g4b" path="res://Game/Scenes/Characters/PlayerCharacter/States/Fall.cs" id="7_8uxjv"]
 [ext_resource type="Script" uid="uid://b7ya3mr5cetn8" path="res://Game/Scenes/Characters/PlayerCharacter/States/Jump.cs" id="8_xesmp"]
@@ -60,16 +60,16 @@ shape = SubResource("CapsuleShape3D_laqd5")
 [node name="MovementComponent" type="Node" parent="."]
 script = ExtResource("3_exhmk")
 
-[node name="StateMachine" type="Node" parent="." node_paths=PackedStringArray("DefaultState")]
+[node name="StateMachine" type="Node" parent="." node_paths=PackedStringArray("DefaultStateNode")]
 script = ExtResource("3_naj1k")
-DefaultState = NodePath("Idle")
+DefaultStateNode = NodePath("Idle")
 
 [node name="Move" type="Node" parent="StateMachine"]
 script = ExtResource("4_asygv")
 metadata/_custom_type_script = "uid://dv7ssuskb8iw1"
 
 [node name="Attack" type="Node" parent="StateMachine"]
-script = ExtResource("5_exhmk")
+script = ExtResource("6_8uxjv")
 metadata/_custom_type_script = "uid://dv7ssuskb8iw1"
 
 [node name="Idle" type="Node" parent="StateMachine"]

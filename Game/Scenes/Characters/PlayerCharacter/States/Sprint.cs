@@ -3,7 +3,7 @@ using MultiplayerPOC.Game.Globals.Constants;
 
 namespace MultiplayerPOC.Game.Scenes.Characters.PlayerCharacter.States;
 
-public partial class Sprint : State
+public partial class Sprint : PlayerState
 {
     private const float SprintSpeed = 9f;
     private const float AccelerationTime = 10f;
@@ -17,15 +17,13 @@ public partial class Sprint : State
             return;
         }
 
-        var body = Controller.Body;
-
-        if (!body.IsOnFloor())
+        if (!Controller.IsOnFloor())
         {
             StateMachine.ChangeState<Fall>();
             return;
         }
 
-        var velocity = body.Velocity;
+        var velocity = Controller.Velocity;
         var direction = Controller.GetMovementDirection(InputDirection);
 
         var targetVelocityX = direction.X * SprintSpeed;
@@ -38,7 +36,7 @@ public partial class Sprint : State
         // Always face movement direction while sprinting, even when locked on
         Controller.LookTowardDirection(direction, (float)delta);
 
-        body.Velocity = velocity;
-        body.MoveAndSlide();
+        Controller.Velocity = velocity;
+        Controller.MoveAndSlide();
     }
 }

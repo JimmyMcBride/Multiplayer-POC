@@ -2,7 +2,7 @@ using Godot;
 
 namespace MultiplayerPOC.Game.Scenes.Characters.PlayerCharacter.States;
 
-public partial class Move : State
+public partial class Move : PlayerState
 {
     private const float MoveSpeed = 6f;
     private const float AccelerationTime = 10f;
@@ -15,15 +15,13 @@ public partial class Move : State
             return;
         }
 
-        var body = Controller.Body;
-
-        if (!body.IsOnFloor())
+        if (!Controller.IsOnFloor())
         {
             StateMachine.ChangeState<Fall>();
             return;
         }
 
-        var velocity = body.Velocity;
+        var velocity = Controller.Velocity;
 
         // No lock-on: always use standard movement direction
         var direction = Controller.GetMovementDirection(InputDirection);
@@ -38,7 +36,7 @@ public partial class Move : State
         // No lock-on: always face movement direction
         Controller.LookTowardDirection(direction, (float)delta);
 
-        body.Velocity = velocity;
-        body.MoveAndSlide();
+        Controller.Velocity = velocity;
+        Controller.MoveAndSlide();
     }
 }

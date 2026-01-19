@@ -2,7 +2,7 @@ using Godot;
 
 namespace MultiplayerPOC.Game.Scenes.Characters.PlayerCharacter.States;
 
-public partial class Dash : State
+public partial class Dash : PlayerState
 {
     private const float DashSpeed = 7f;
 
@@ -10,9 +10,9 @@ public partial class Dash : State
 
     public override bool IsStateLocked => true;
 
-    public override void Enter(State previousState)
+    public override void Enter(PlayerState previousPlayerState)
     {
-        base.Enter(previousState);
+        base.Enter(previousPlayerState);
 
         var inputDir = InputDirection;
 
@@ -28,7 +28,7 @@ public partial class Dash : State
     public override void PhysicsUpdate(double delta)
     {
         // Transition to fall if dashed off a ledge
-        if (!Controller.Body.IsOnFloor())
+        if (!Controller.IsOnFloor())
         {
             StateMachine.ChangeState<Fall>();
             return;
@@ -36,12 +36,12 @@ public partial class Dash : State
 
         // Apply programmatic motion - constant dash speed
         var horizontalVelocity = _dashDirection.Normalized() * DashSpeed;
-        Controller.Body.Velocity = new Vector3(
+        Controller.Velocity = new Vector3(
             horizontalVelocity.X,
-            Controller.Body.Velocity.Y, // Preserve Y velocity for gravity
+            Controller.Velocity.Y, // Preserve Y velocity for gravity
             horizontalVelocity.Z
         );
 
-        Controller.Body.MoveAndSlide();
+        Controller.MoveAndSlide();
     }
 }
