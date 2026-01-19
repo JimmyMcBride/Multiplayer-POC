@@ -32,6 +32,7 @@ public partial class PlayerCharacter : CharacterBody3D, ICharacterController
     public override void _Ready()
     {
         CameraComponent = GetNode<CameraComponent>("CameraComponent");
+        CameraComponent.Initialize(this);
         MovementComponent = GetNode<MovementComponent>("MovementComponent");
         Pivot = GetNode<Node3D>("Pivot");
         MovementComponent.Initialize(

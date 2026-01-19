@@ -1,6 +1,7 @@
 using Godot;
 using MultiplayerPOC.Engine.Godot;
 using MultiplayerPOC.Game.Globals.Constants;
+using MultiplayerPOC.Game.Scenes.Characters.PlayerCharacter.Interfaces;
 
 namespace MultiplayerPOC.Game.Scenes.Characters.PlayerCharacter.Components;
 
@@ -21,6 +22,11 @@ public partial class CameraComponent : Node3D
         HorizontalPivot = GetNode<Node3D>("HorizontalPivot");
         VerticalPivot = HorizontalPivot.GetNode<Node3D>("VerticalPivot");
         _cameraArm = GetNode<SmoothCameraArm>("SmoothCameraArm");
+    }
+
+    public void Initialize(ICharacterController controller)
+    {
+        _cameraArm.Initialize(controller);
     }
 
     public override void _PhysicsProcess(double delta)
