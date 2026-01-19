@@ -5,7 +5,7 @@ namespace MultiplayerPOC.Game.Scenes.Characters.PlayerCharacter.States;
 
 public partial class Sprint : PlayerState
 {
-    private const float SprintSpeed = 9f;
+    private const float SprintSpeed = 14f;
     private const float AccelerationTime = 10f;
 
     public override void PhysicsUpdate(double delta)

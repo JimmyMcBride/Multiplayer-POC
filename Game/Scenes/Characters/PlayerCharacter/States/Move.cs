@@ -33,7 +33,6 @@ public partial class Move : PlayerState
         velocity.X = Mathf.Lerp(velocity.X, targetVelocityX, t);
         velocity.Z = Mathf.Lerp(velocity.Z, targetVelocityZ, t);
 
-        // No lock-on: always face movement direction
         Controller.LookTowardDirection(direction, (float)delta);
 
         Controller.Velocity = velocity;

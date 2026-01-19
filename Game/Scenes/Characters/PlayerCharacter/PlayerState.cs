@@ -26,7 +26,7 @@ public partial class PlayerState : Node
 
     protected virtual bool CanDash => !IsInAirState && !IsStateLocked;
     protected virtual bool CanSprint => !IsInAirState && !IsStateLocked;
-    protected virtual bool CanJump => !IsInAirState;
+    protected virtual bool CanJump => !IsInAirState && !IsStateLocked;
     protected virtual bool CanAttack => !IsStateLocked;
 
     public virtual bool IsStateLocked => false;
@@ -84,7 +84,7 @@ public partial class PlayerState : Node
         if (!CanDash || !Input.IsActionJustPressed(InputAction.Dash))
             return false;
 
-        // StateMachine.ChangeState<Dash>();
+        StateMachine.ChangeState<Dash>();
         return true;
     }
 
