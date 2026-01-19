@@ -9,8 +9,7 @@ public partial class Idle : PlayerState
         if (!Controller.IsOnFloor())
             StateMachine.ChangeState<Fall>();
 
-        var inputDir = GetInputDirection();
-        if (inputDir != Vector2.Zero)
+        if (InputDirection != Vector2.Zero)
         {
             // Prefer sprint if the sprint action is held while moving
             if (Input.IsActionPressed("sprint"))

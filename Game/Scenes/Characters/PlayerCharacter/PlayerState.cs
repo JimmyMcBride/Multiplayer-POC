@@ -10,7 +10,7 @@ public partial class PlayerState : Node
 {
     private PlayerState _previousPlayerState;
 
-    protected Vector2 InputDirection => Input.GetVector(
+    protected static Vector2 InputDirection => Input.GetVector(
         InputAction.Left,
         InputAction.Right,
         InputAction.Forward,
@@ -24,7 +24,7 @@ public partial class PlayerState : Node
     protected PlayerCharacter Controller { get; private set; }
 
 
-    protected virtual bool CanDash => !IsInAirState && !IsStateLocked;
+    protected virtual bool CanDash => !IsStateLocked;
     protected virtual bool CanSprint => !IsInAirState && !IsStateLocked;
     protected virtual bool CanJump => !IsInAirState && !IsStateLocked;
     protected virtual bool CanAttack => !IsStateLocked;

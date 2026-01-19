@@ -11,6 +11,10 @@ public partial class Dash : PlayerState
     private Vector3 _dashDirection;
     private float _elapsedSeconds; // timer
 
+    // New fields to capture/restore pre-dash horizontal velocity when dashing in air
+    private Vector3 _preDashHorizontalVelocity;
+    private bool _wasInAirDuringDash;
+
     public override bool IsStateLocked => true;
 
     public override void Enter(PlayerState previousPlayerState)
@@ -19,8 +23,19 @@ public partial class Dash : PlayerState
 
         _elapsedSeconds = 0f; // reset timer
 
+        // Capture whether we started the dash while in air and save horizontal velocity
+        _wasInAirDuringDash = !Controller.IsOnFloor();
+        if (_wasInAirDuringDash)
+            _preDashHorizontalVelocity = new Vector3(Controller.Velocity.X, 0f, Controller.Velocity.Z);
+
         var basis = Controller.GetCharacterBasis();
         var moveDir = basis.X * -InputDirection.X + basis.Z * -InputDirection.Y;
+        var stillCharacterDirection = Controller.IsOnFloor()
+            ? -basis.Z
+            : basis.Z;
+        var stillCameraDirection = Controller.IsOnFloor()
+            ? -Controller.MovementComponent.GetCameraForward().Normalized()
+            : Controller.MovementComponent.GetCameraForward().Normalized();
 
         // Determine dash direction from movement input (world-space).
         // Project 2D input onto character basis X and Z so dash follows movement direction.
@@ -28,7 +43,7 @@ public partial class Dash : PlayerState
         {
             if (moveDir.IsZeroApprox())
                 // Fallback to backward dash if projection yields zero
-                _dashDirection = -basis.Z;
+                _dashDirection = stillCharacterDirection;
             else
                 _dashDirection = Controller.MovementComponent.CurrentFacingMode == FacingMode.Camera
                     ? moveDir.Normalized()
@@ -37,10 +52,9 @@ public partial class Dash : PlayerState
         else
         {
             // No input - dash backward relative to character facing
-            // _dashDirection = -Controller.GetCharacterBasis().Z;
             _dashDirection = Controller.MovementComponent.CurrentFacingMode == FacingMode.Camera
-                ? -Controller.MovementComponent.GetCameraForward().Normalized()
-                : -basis.Z;
+                ? stillCameraDirection
+                : stillCharacterDirection;
         }
     }
 
@@ -50,6 +64,14 @@ public partial class Dash : PlayerState
         _elapsedSeconds += (float)delta;
         if (_elapsedSeconds >= DashDuration)
         {
+            // Restore pre-dash horizontal speed if we dashed while in air
+            if (_wasInAirDuringDash)
+                Controller.Velocity = new Vector3(
+                    _preDashHorizontalVelocity.X,
+                    Controller.Velocity.Y, // Preserve Y velocity for gravity
+                    _preDashHorizontalVelocity.Z
+                );
+
             StateMachine.ChangeState<Idle>();
             return;
         }
