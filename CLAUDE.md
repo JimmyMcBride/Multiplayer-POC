@@ -1,0 +1,127 @@
+# Multiplayer POC
+
+> **Token-saving tip:** Only read guides in `ClaudeInstructions/` when relevant to your current task.
+
+## Tech Stack
+
+- **Engine:** Godot 4.5 with Forward Plus renderer
+- **Language:** C# (.NET 8)
+- **Branch:** `trunk`
+
+## Quick Start
+
+```bash
+godot --path .           # Run game
+godot --path . --editor  # Open editor
+dotnet build             # Build C# only
+```
+
+## Project Structure
+
+```
+Engine/           # Core utilities, Godot extensions
+Game/
+├── Globals/      # Constants (InputAction.cs)
+├── Resources/    # Materials, assets
+└── Scenes/
+    ├── Characters/PlayerCharacter/  # Player system
+    └── Levels/                      # Level scenes
+Assets/           # External assets
+ClaudeInstructions/  # Detailed guides (load on-demand)
+```
+
+## Key Files
+
+| File | Purpose |
+|------|---------|
+| `Game/Scenes/Characters/PlayerCharacter/PlayerCharacter.cs` | Main character controller |
+| `Game/Scenes/Characters/PlayerCharacter/StateMachine.cs` | State management |
+| `Game/Scenes/Characters/PlayerCharacter/State.cs` | Base state class |
+| `Game/Scenes/Characters/PlayerCharacter/States/*.cs` | Individual states |
+| `Game/Globals/Constants/InputAction.cs` | Input action names |
+| `Engine/Core/Log.cs` | Logging utility |
+| `project.godot` | Project settings, input mappings |
+
+## Common Namespaces
+
+```csharp
+using Godot;
+using MultiplayerPOC.Engine.Core;                    // Log
+using MultiplayerPOC.Engine.Godot;                   // Extensions (SetX, SetY, etc.)
+using MultiplayerPOC.Game.Globals.Constants;         // InputAction
+using MultiplayerPOC.Game.Scenes.Characters.PlayerCharacter;            // State, StateMachine
+using MultiplayerPOC.Game.Scenes.Characters.PlayerCharacter.States;     // Idle, Move, Jump...
+using MultiplayerPOC.Game.Scenes.Characters.PlayerCharacter.Components; // CameraComponent, etc.
+using MultiplayerPOC.Game.Scenes.Characters.PlayerCharacter.Interfaces; // ICharacterController
+```
+
+## Quick Reference
+
+### Logging
+```csharp
+Log.Debug("msg");   // Green
+Log.Info("msg");    // Cyan
+Log.Warning("msg"); // Yellow
+Log.Error("msg");   // Red
+```
+
+### Input Actions
+```csharp
+InputAction.Jump      // "jump" (Space)
+InputAction.Forward   // "move_forward" (W)
+InputAction.Backward  // "move_backward" (S)
+InputAction.Left      // "move_left" (A)
+InputAction.Right     // "move_right" (D)
+InputAction.Sprint    // "sprint" (Shift)
+InputAction.Dash      // "dash" (Tab/B)
+InputAction.Attack    // "attack" (LMB)
+InputAction.Crouch    // "crouch" (C)
+```
+
+### State Transitions
+```csharp
+StateMachine.ChangeState<Idle>();
+StateMachine.ChangeState<Move>();
+StateMachine.ChangeState<Jump>();
+StateMachine.ChangeState<Fall>();
+```
+
+### Vector Extensions
+```csharp
+vector.SetX(val)  vector.SetY(val)  vector.SetZ(val)
+vector.SetXy(x,y) vector.SetXz(x,z) vector.SetYz(y,z)
+```
+
+### Smooth Interpolation
+```csharp
+var t = 1f - Mathf.Exp(-speed * (float)delta);
+value = Mathf.Lerp(value, target, t);
+```
+
+## Detailed Guides
+
+| Guide | Read When |
+|-------|-----------|
+| [Architecture Overview](ClaudeInstructions/architecture-overview.md) | Understanding system design, component relationships, planning features |
+| [Coding Standards](ClaudeInstructions/coding-standards.md) | Writing new code, checking conventions, organizing files |
+| [State Machine Guide](ClaudeInstructions/state-machine-guide.md) | Creating states, modifying transitions, debugging state behavior |
+| [Common Tasks](ClaudeInstructions/common-tasks.md) | Step-by-step workflows for routine development tasks |
+
+## Guide Selection
+
+| Task Type | Guide to Read |
+|-----------|---------------|
+| Add new character ability/state | `state-machine-guide.md` |
+| Add new input action | `common-tasks.md` |
+| Add new component | `common-tasks.md` |
+| Understand codebase | `architecture-overview.md` |
+| Fix styling/conventions | `coding-standards.md` |
+| Debug state issues | `state-machine-guide.md` |
+| Plan new feature | `architecture-overview.md` |
+| Create new level | `common-tasks.md` |
+
+## Maintenance
+
+When making changes that affect the architecture or patterns:
+1. Update the relevant guide in `ClaudeInstructions/`
+2. Update this file if key files or quick references change
