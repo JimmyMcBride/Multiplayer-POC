@@ -16,4 +16,5 @@ public static class InputAction
     public const string Cancel = "cancel";
     public const string Pause = "pause";
     public const string Quit = "quit";
+    public const string ToggleFacingMode = "toggle_facing_mode";
 }

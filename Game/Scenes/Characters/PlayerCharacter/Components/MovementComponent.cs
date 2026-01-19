@@ -1,11 +1,20 @@
 using Godot;
+using MultiplayerPOC.Engine.Core;
 
 namespace MultiplayerPOC.Game.Scenes.Characters.PlayerCharacter.Components;
+
+public enum FacingMode
+{
+    Movement,
+    Camera
+}
 
 public partial class MovementComponent : Node
 {
     private Node3D _horizontalPivot;
     private Node3D _pivot;
+
+    public FacingMode CurrentFacingMode { get; private set; } = FacingMode.Movement;
 
     public void Initialize(
         Node3D pivot,
@@ -15,21 +24,38 @@ public partial class MovementComponent : Node
         _horizontalPivot = horizontalPivot;
     }
 
+    public void ToggleFacingMode()
+    {
+        CurrentFacingMode = CurrentFacingMode == FacingMode.Movement
+            ? FacingMode.Camera
+            : FacingMode.Movement;
+        Log.Info($"Facing mode: {CurrentFacingMode}");
+    }
+
     public void LookTowardDirection(Vector3 direction, float delta)
     {
-        if (direction.LengthSquared() < 0.0001f)
+        var lookDirection = CurrentFacingMode == FacingMode.Camera
+            ? GetCameraForward()
+            : direction;
+
+        if (lookDirection.LengthSquared() < 0.0001f)
             return;
 
         var targetTransform = _pivot.GlobalTransform.LookingAt(
-            _pivot.GlobalPosition + direction,
+            _pivot.GlobalPosition + lookDirection,
             Vector3.Up,
             true
         );
 
         _pivot.GlobalTransform = _pivot.GlobalTransform.InterpolateWith(
             targetTransform,
-            1f - Mathf.Exp(-20f * delta)
+            1f - Mathf.Exp(-80f * delta)
         );
+    }
+
+    public Vector3 GetCameraForward()
+    {
+        return -_horizontalPivot.GlobalTransform.Basis.Z;
     }
 
     public Basis GetCharacterBasis()

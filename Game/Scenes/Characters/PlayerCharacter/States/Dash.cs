@@ -1,10 +1,12 @@
 using Godot;
+using MultiplayerPOC.Game.Scenes.Characters.PlayerCharacter.Components;
 
 namespace MultiplayerPOC.Game.Scenes.Characters.PlayerCharacter.States;
 
 public partial class Dash : PlayerState
 {
     private const float DashSpeed = 40f;
+    private const float DashDuration = 0.25f;
 
     private Vector3 _dashDirection;
     private float _elapsedSeconds; // timer
@@ -17,26 +19,44 @@ public partial class Dash : PlayerState
 
         _elapsedSeconds = 0f; // reset timer
 
-        var inputDir = InputDirection;
+        var basis = Controller.GetCharacterBasis();
+        var moveDir = basis.X * -InputDirection.X + basis.Z * -InputDirection.Y;
 
-        // Determine dash direction and animation (all use programmatic motion)
-        if (inputDir.IsZeroApprox())
-            // Standing still - backward dash
-            _dashDirection = -Controller.GetCharacterBasis().Z; // Backward (opposite of facing)
+        // Determine dash direction from movement input (world-space).
+        // Project 2D input onto character basis X and Z so dash follows movement direction.
+        if (!InputDirection.IsZeroApprox())
+        {
+            if (moveDir.IsZeroApprox())
+                // Fallback to backward dash if projection yields zero
+                _dashDirection = -basis.Z;
+            else
+                _dashDirection = Controller.MovementComponent.CurrentFacingMode == FacingMode.Camera
+                    ? moveDir.Normalized()
+                    : basis.Z;
+        }
         else
-            // Moving - forward dash
-            _dashDirection = Controller.GetCharacterBasis().Z;
+        {
+            // No input - dash backward relative to character facing
+            // _dashDirection = -Controller.GetCharacterBasis().Z;
+            _dashDirection = Controller.MovementComponent.CurrentFacingMode == FacingMode.Camera
+                ? -Controller.MovementComponent.GetCameraForward().Normalized()
+                : -basis.Z;
+        }
     }
 
     public override void PhysicsUpdate(double delta)
     {
         // Update timer
         _elapsedSeconds += (float)delta;
-        if (_elapsedSeconds >= .5f)
+        if (_elapsedSeconds >= DashDuration)
         {
-            StateMachine.ChangeState<Idle>(); // exit to idle after 1 second
+            StateMachine.ChangeState<Idle>();
             return;
         }
+
+        // Rotate character to face opposite dash direction if no movement input and in Camera facing mode
+        if (InputDirection.IsZeroApprox() && Controller.MovementComponent.CurrentFacingMode == FacingMode.Camera)
+            Controller.LookTowardDirection(-_dashDirection, (float)delta);
 
         // Apply programmatic motion - constant dash speed
         var horizontalVelocity = _dashDirection.Normalized() * DashSpeed;

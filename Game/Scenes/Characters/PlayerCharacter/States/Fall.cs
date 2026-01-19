@@ -10,7 +10,6 @@ public partial class Fall : PlayerState
 
         Controller.MoveAndSlide();
 
-        // Facing logic: keep looking at lock-on target while in air
         var moveDir = Controller.GetMovementDirection(InputDirection);
 
         if (InputDirection.LengthSquared() > 0.0001f)

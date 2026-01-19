@@ -1,4 +1,5 @@
 using Godot;
+using MultiplayerPOC.Engine.Core;
 using MultiplayerPOC.Game.Globals.Constants;
 using MultiplayerPOC.Game.Scenes.Characters.PlayerCharacter.Components;
 
@@ -45,5 +46,14 @@ public partial class PlayerCharacter : CharacterBody3D
     {
         if (Input.IsActionJustPressed(InputAction.Quit))
             GetTree().Quit();
+
+        if (Input.IsActionJustPressed(InputAction.ToggleFacingMode))
+            ToggleFacingMode();
+    }
+
+    private void ToggleFacingMode()
+    {
+        Log.Debug("ToggleFacingMode");
+        MovementComponent.ToggleFacingMode();
     }
 }

@@ -9,8 +9,15 @@ public partial class Idle : PlayerState
         if (!Controller.IsOnFloor())
             StateMachine.ChangeState<Fall>();
 
-        if (GetInputDirection() != Vector2.Zero)
-            StateMachine.ChangeState<Move>();
+        var inputDir = GetInputDirection();
+        if (inputDir != Vector2.Zero)
+        {
+            // Prefer sprint if the sprint action is held while moving
+            if (Input.IsActionPressed("sprint"))
+                StateMachine.ChangeState<Sprint>();
+            else
+                StateMachine.ChangeState<Move>();
+        }
 
         var velocity = Controller.Velocity;
         velocity.X = Mathf.MoveToward(Controller.Velocity.X, 0, (float)delta * 25);
