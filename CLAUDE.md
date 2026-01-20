@@ -36,7 +36,7 @@ ClaudeInstructions/  # Detailed guides (load on-demand)
 |------|---------|
 | `Game/Scenes/Characters/PlayerCharacter/PlayerCharacter.cs` | Main character controller |
 | `Game/Scenes/Characters/PlayerCharacter/StateMachine.cs` | State management |
-| `Game/Scenes/Characters/PlayerCharacter/State.cs` | Base state class |
+| `Game/Scenes/Characters/PlayerCharacter/PlayerState.cs` | Base state class |
 | `Game/Scenes/Characters/PlayerCharacter/States/*.cs` | Individual states |
 | `Game/Globals/Constants/InputAction.cs` | Input action names |
 | `Engine/Core/Log.cs` | Logging utility |
@@ -49,10 +49,9 @@ using Godot;
 using MultiplayerPOC.Engine.Core;                    // Log
 using MultiplayerPOC.Engine.Godot;                   // Extensions (SetX, SetY, etc.)
 using MultiplayerPOC.Game.Globals.Constants;         // InputAction
-using MultiplayerPOC.Game.Scenes.Characters.PlayerCharacter;            // State, StateMachine
-using MultiplayerPOC.Game.Scenes.Characters.PlayerCharacter.States;     // Idle, Move, Jump...
-using MultiplayerPOC.Game.Scenes.Characters.PlayerCharacter.Components; // CameraComponent, etc.
-using MultiplayerPOC.Game.Scenes.Characters.PlayerCharacter.Interfaces; // ICharacterController
+using MultiplayerPOC.Game.Scenes.Characters.PlayerCharacter;            // PlayerState, StateMachine
+using MultiplayerPOC.Game.Scenes.Characters.PlayerCharacter.States;     // Idle, Move, Jump, Dash...
+using MultiplayerPOC.Game.Scenes.Characters.PlayerCharacter.Components; // CameraComponent, MovementComponent, etc.
 ```
 
 ## Quick Reference
@@ -67,15 +66,21 @@ Log.Error("msg");   // Red
 
 ### Input Actions
 ```csharp
-InputAction.Jump      // "jump" (Space)
-InputAction.Forward   // "move_forward" (W)
-InputAction.Backward  // "move_backward" (S)
-InputAction.Left      // "move_left" (A)
-InputAction.Right     // "move_right" (D)
-InputAction.Sprint    // "sprint" (Shift)
-InputAction.Dash      // "dash" (Tab/B)
-InputAction.Attack    // "attack" (LMB)
-InputAction.Crouch    // "crouch" (C)
+InputAction.Jump              // "jump" (Space)
+InputAction.Forward           // "move_forward" (W)
+InputAction.Backward          // "move_backward" (S)
+InputAction.Left              // "move_left" (A)
+InputAction.Right             // "move_right" (D)
+InputAction.Sprint            // "sprint" (Shift)
+InputAction.Dash              // "dash" (Tab/B)
+InputAction.Attack            // "attack" (LMB)
+InputAction.Crouch            // "crouch" (C)
+InputAction.Inventory         // "inventory" (I)
+InputAction.Accept            // "accept" (E)
+InputAction.Cancel            // "cancel" (Q)
+InputAction.Pause             // "pause" (P)
+InputAction.Quit              // "quit" (Esc)
+InputAction.ToggleFacingMode  // "toggle_facing_mode" (V)
 ```
 
 ### State Transitions
@@ -84,6 +89,9 @@ StateMachine.ChangeState<Idle>();
 StateMachine.ChangeState<Move>();
 StateMachine.ChangeState<Jump>();
 StateMachine.ChangeState<Fall>();
+StateMachine.ChangeState<Land>();
+StateMachine.ChangeState<Sprint>();
+StateMachine.ChangeState<Dash>();
 ```
 
 ### Vector Extensions

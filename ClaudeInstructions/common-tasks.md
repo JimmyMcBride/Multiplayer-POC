@@ -42,7 +42,7 @@ if (Input.IsActionJustPressed(InputAction.NewAction))
 See [State Machine Guide](./state-machine-guide.md) for detailed instructions.
 
 **Quick checklist:**
-1. Create `States/NewState.cs` extending `State`
+1. Create `States/NewState.cs` extending `PlayerState`
 2. Override `Enter`, `Exit`, `PhysicsUpdate` as needed
 3. Set capability flags (`IsInAirState`, `CanJump`, etc.)
 4. Add node to StateMachine in `player_character.tscn`
@@ -57,15 +57,14 @@ See [State Machine Guide](./state-machine-guide.md) for detailed instructions.
 ```csharp
 // Game/Scenes/Characters/PlayerCharacter/Components/NewComponent.cs
 using Godot;
-using MultiplayerPOC.Game.Scenes.Characters.PlayerCharacter.Interfaces;
 
 namespace MultiplayerPOC.Game.Scenes.Characters.PlayerCharacter.Components;
 
 public partial class NewComponent : Node  // Or Node3D if spatial
 {
-    private ICharacterController _controller;
+    private PlayerCharacter _controller;
 
-    public void Initialize(ICharacterController controller)
+    public void Initialize(PlayerCharacter controller)
     {
         _controller = controller;
     }
@@ -96,20 +95,9 @@ public override void _Ready()
 
 ---
 
-## Adding a New Interface Method
+## Adding a New Method to PlayerCharacter
 
-### 1. Add to Appropriate Interface
-
-```csharp
-// Game/Scenes/Characters/PlayerCharacter/Interfaces/IMovementController.cs
-public interface IMovementController
-{
-    // ... existing methods ...
-    void NewMethod(SomeType param);
-}
-```
-
-### 2. Implement in PlayerCharacter
+### 1. Add to PlayerCharacter
 
 ```csharp
 // PlayerCharacter.cs

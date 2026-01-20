@@ -6,19 +6,22 @@ namespace MultiplayerPOC.Game.Scenes.Characters.PlayerCharacter;
 public partial class StateMachine : Node
 {
     private readonly Dictionary<string, PlayerState> _states = new();
+    private bool _isLocalPlayer = true;
 
     [Export] public Node DefaultStateNode;
     public PlayerState CurrentState { get; private set; }
+    public bool IsLocalPlayer => _isLocalPlayer;
 
-    public void Initialize(PlayerCharacter controller)
+    public void Initialize(PlayerCharacter controller, bool isLocalPlayer = true)
     {
+        _isLocalPlayer = isLocalPlayer;
         _states.Clear();
 
         foreach (var child in GetChildren())
         {
             if (child is not PlayerState state) continue;
             _states[child.Name] = state;
-            state.Initialize(controller);
+            state.Initialize(controller, isLocalPlayer);
         }
 
         if (DefaultStateNode is not PlayerState defaultState) return;
@@ -52,6 +55,7 @@ public partial class StateMachine : Node
 
     public override void _UnhandledInput(InputEvent @event)
     {
+        if (!_isLocalPlayer) return;
         CurrentState?.SpecialInput(@event);
     }
 }

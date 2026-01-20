@@ -12,6 +12,7 @@ public partial class PlayerCharacter : CharacterBody3D
     public Node3D Pivot { get; private set; }
     public CameraComponent CameraComponent { get; private set; }
     public bool IsInAir => _stateMachine?.CurrentState?.IsInAirState ?? false;
+    public bool IsLocalPlayer { get; private set; }
 
     public void LookTowardDirection(Vector3 direction, float delta)
     {
@@ -31,21 +32,40 @@ public partial class PlayerCharacter : CharacterBody3D
     public override void _Ready()
     {
         CameraComponent = GetNode<CameraComponent>("CameraComponent");
-        CameraComponent.Initialize(this);
         MovementComponent = GetNode<MovementComponent>("MovementComponent");
         Pivot = GetNode<Node3D>("Pivot");
-        MovementComponent.Initialize(
-            Pivot,
-            CameraComponent.HorizontalPivot
-        );
         _stateMachine = GetNode<StateMachine>("StateMachine");
-        _stateMachine.Initialize(this);
+
+        // Determine locality from node name (Player_{peerId}) since MultiplayerSpawner doesn't preserve authority
+        var myPeerId = Multiplayer.GetUniqueId();
+        IsLocalPlayer = Name == $"Player_{myPeerId}";
+
+        Log.Info($"PlayerCharacter._Ready: {Name}, IsLocal={IsLocalPlayer}, MyPeerId={myPeerId}");
+
+        if (IsLocalPlayer)
+        {
+            SetMultiplayerAuthority(myPeerId);
+            Log.Info($"Initializing as LOCAL player: {Name}");
+            CameraComponent.Initialize(this);
+            CameraComponent.MakeCurrent();
+            MovementComponent.Initialize(Pivot, CameraComponent.HorizontalPivot);
+            _stateMachine.Initialize(this);
+        }
+        else
+        {
+            Log.Info($"Initializing as REMOTE player: {Name}");
+            CameraComponent.SetProcessInput(false);
+            MovementComponent.Initialize(Pivot, null);
+            _stateMachine.Initialize(this, isLocalPlayer: false);
+        }
     }
 
     public override void _UnhandledInput(InputEvent @event)
     {
         if (Input.IsActionJustPressed(InputAction.Quit))
             GetTree().Quit();
+
+        if (!IsLocalPlayer) return;
 
         if (Input.IsActionJustPressed(InputAction.ToggleFacingMode))
             ToggleFacingMode();

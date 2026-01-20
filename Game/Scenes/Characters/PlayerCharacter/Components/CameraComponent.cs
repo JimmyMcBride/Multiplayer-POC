@@ -11,7 +11,9 @@ public partial class CameraComponent : Node3D
     private const float MaxBoundary = 40;
 
     private SmoothCameraArm _cameraArm;
+    private Camera3D _camera;
     private Vector2 _look = Vector2.Zero;
+    private bool _isLocalPlayer;
 
     public Node3D HorizontalPivot { get; private set; }
     public Node3D VerticalPivot { get; private set; }
@@ -21,11 +23,18 @@ public partial class CameraComponent : Node3D
         HorizontalPivot = GetNode<Node3D>("HorizontalPivot");
         VerticalPivot = HorizontalPivot.GetNode<Node3D>("VerticalPivot");
         _cameraArm = GetNode<SmoothCameraArm>("SmoothCameraArm");
+        _camera = _cameraArm.GetNode<Camera3D>("Camera3D");
     }
 
     public void Initialize(PlayerCharacter controller)
     {
+        _isLocalPlayer = true;
         _cameraArm.Initialize(controller);
+    }
+
+    public void MakeCurrent()
+    {
+        _camera.MakeCurrent();
     }
 
     public override void _PhysicsProcess(double delta)
@@ -35,6 +44,8 @@ public partial class CameraComponent : Node3D
 
     public override void _UnhandledInput(InputEvent @event)
     {
+        if (!_isLocalPlayer) return;
+
         if (Input.IsActionJustPressed(InputAction.Pause) || Input.IsActionJustPressed(InputAction.Cancel))
             Input.MouseMode = Input.MouseMode == Input.MouseModeEnum.Captured
                 ? Input.MouseModeEnum.Visible

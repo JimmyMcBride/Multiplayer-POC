@@ -9,19 +9,18 @@ namespace MultiplayerPOC.Game.Scenes.Characters.PlayerCharacter;
 public partial class PlayerState : Node
 {
     private PlayerState _previousPlayerState;
+    private bool _isLocalPlayer = true;
 
-    protected static Vector2 InputDirection => Input.GetVector(
-        InputAction.Left,
-        InputAction.Right,
-        InputAction.Forward,
-        InputAction.Backward
-    );
+    protected Vector2 InputDirection => _isLocalPlayer
+        ? Input.GetVector(InputAction.Left, InputAction.Right, InputAction.Forward, InputAction.Backward)
+        : Vector2.Zero;
 
     protected virtual float DefaultTransitionTime => 0.2f;
 
     protected bool IsActive { get; private set; }
     protected StateMachine StateMachine { get; private set; }
     protected PlayerCharacter Controller { get; private set; }
+    protected bool IsLocalPlayer => _isLocalPlayer;
 
 
     protected virtual bool CanDash => !IsStateLocked;
@@ -47,14 +46,16 @@ public partial class PlayerState : Node
     {
     }
 
-    public void Initialize(PlayerCharacter controller)
+    public void Initialize(PlayerCharacter controller, bool isLocalPlayer = true)
     {
         StateMachine = GetParent<StateMachine>();
         Controller = controller;
+        _isLocalPlayer = isLocalPlayer;
     }
 
     public void SpecialInput(InputEvent @event)
     {
+        if (!_isLocalPlayer) return;
         TryAttack();
         TryDash();
         TrySprint();
@@ -68,8 +69,9 @@ public partial class PlayerState : Node
         _previousPlayerState = previousPlayerState;
     }
 
-    protected static Vector2 GetInputDirection()
+    protected Vector2 GetInputDirection()
     {
+        if (!_isLocalPlayer) return Vector2.Zero;
         return Input.GetVector(InputAction.Left, InputAction.Right, InputAction.Forward, InputAction.Backward);
     }
 

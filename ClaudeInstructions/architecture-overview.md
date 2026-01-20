@@ -36,22 +36,21 @@ PlayerCharacter (CharacterBody3D)
 │   │   └── VerticalPivot (Node3D)    # Pitch rotation
 │   └── SmoothCameraArm (SpringArm3D) # Camera offset & collision
 └── StateMachine (Node)               # Behavior state machine
-    ├── Idle (State)
-    ├── Move (State)
-    ├── Jump (State)
-    ├── Fall (State)
-    ├── Land (State)
-    ├── Sprint (State)
-    └── Dash (State)
+    ├── Idle (PlayerState)
+    ├── Move (PlayerState)
+    ├── Jump (PlayerState)
+    ├── Fall (PlayerState)
+    ├── Land (PlayerState)
+    ├── Sprint (PlayerState)
+    └── Dash (PlayerState)
 ```
 
-**Interface Composition:**
-```
-ICharacterController
-├── IMovementController  # LookTowardDirection, GetMovementDirection, GetCharacterBasis
-├── IPhysicsBody         # Body (CharacterBody3D reference)
-└── ICameraTarget        # IsInAir, Pivot
-```
+**PlayerCharacter provides:**
+- `LookTowardDirection()` - Delegates to MovementComponent
+- `GetMovementDirection()` - Delegates to MovementComponent
+- `GetCharacterBasis()` - Delegates to MovementComponent
+- `Velocity`, `IsOnFloor()`, `MoveAndSlide()` - Inherited from CharacterBody3D
+- `IsInAir`, `Pivot` - Properties for camera/state access
 
 ### 2. State Machine
 
@@ -59,17 +58,17 @@ Located in `Game/Scenes/Characters/PlayerCharacter/`.
 
 **Key Classes:**
 - `StateMachine.cs` - Manages state transitions and delegates lifecycle calls
-- `State.cs` - Base class for all states with common functionality
+- `PlayerState.cs` - Base class for all states with common functionality
 
 **State Lifecycle:**
 1. `Initialize(controller)` - Called once when StateMachine initializes
-2. `Enter(previousState)` - Called when transitioning into this state
+2. `Enter(previousPlayerState)` - Called when transitioning into this state
 3. `Update(delta)` - Called every frame (`_Process`)
 4. `PhysicsUpdate(delta)` - Called every physics tick (`_PhysicsProcess`)
 5. `SpecialInput(event)` - Called for unhandled input (`_UnhandledInput`)
 6. `Exit()` - Called when transitioning out of this state
 
-**Capability Flags (in State.cs):**
+**Capability Flags (in PlayerState.cs):**
 - `CanDash` - Whether dash input is processed
 - `CanSprint` - Whether sprint input is processed
 - `CanJump` - Whether jump input is processed

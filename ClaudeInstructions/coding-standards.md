@@ -21,10 +21,9 @@
 MultiplayerPOC.Engine.Core           // Engine utilities
 MultiplayerPOC.Engine.Godot          // Godot extensions
 MultiplayerPOC.Game.Globals.Constants // Game constants
-MultiplayerPOC.Game.Scenes.Characters.PlayerCharacter           // Player root
-MultiplayerPOC.Game.Scenes.Characters.PlayerCharacter.States    // State classes
-MultiplayerPOC.Game.Scenes.Characters.PlayerCharacter.Components // Components
-MultiplayerPOC.Game.Scenes.Characters.PlayerCharacter.Interfaces // Interfaces
+MultiplayerPOC.Game.Scenes.Characters.PlayerCharacter           // Player root (PlayerState, StateMachine)
+MultiplayerPOC.Game.Scenes.Characters.PlayerCharacter.States    // State classes (Idle, Move, Jump, etc.)
+MultiplayerPOC.Game.Scenes.Characters.PlayerCharacter.Components // Components (CameraComponent, MovementComponent)
 ```
 
 Namespaces mirror the folder structure under the project root.
@@ -48,7 +47,7 @@ public partial class ClassName : BaseClass, IInterface
     private StateMachine _stateMachine;
 
     // 3. Properties
-    public State CurrentState { get; private set; }
+    public PlayerState CurrentState { get; private set; }
 
     // 4. Godot lifecycle methods (_Ready, _Process, etc.)
     public override void _Ready() { }
@@ -83,8 +82,8 @@ public partial class PlayerCharacter : CharacterBody3D { }
 
 ### Export Attributes
 ```csharp
-[Export] public State DefaultState;  // Exposed in Inspector
-[GlobalClass] public partial class State : Node { }  // Visible in "Add Node" dialog
+[Export] public Node DefaultStateNode;  // Exposed in Inspector
+[GlobalClass] public partial class PlayerState : Node { }  // Visible in "Add Node" dialog
 ```
 
 ### Input Handling
@@ -122,7 +121,7 @@ transform = transform.InterpolateWith(targetTransform, t);
 ### Initialization Pattern
 Components that depend on external references use explicit initialization:
 ```csharp
-public void Initialize(ICharacterController controller)
+public void Initialize(PlayerCharacter controller)
 {
     _controller = controller;
     // Setup that requires controller...
@@ -150,7 +149,6 @@ protected override bool CanJump => false;   // Disable jump specifically
 |------|----------|
 | New State | `Game/Scenes/Characters/PlayerCharacter/States/` |
 | New Component | `Game/Scenes/Characters/PlayerCharacter/Components/` |
-| New Interface | `Game/Scenes/Characters/PlayerCharacter/Interfaces/` |
 | New Constant | `Game/Globals/Constants/` |
 | Engine Utility | `Engine/Core/` |
 | Godot Extension | `Engine/Godot/` |
