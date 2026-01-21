@@ -15,9 +15,9 @@ run/main_scene="uid://b5evq5fwxet4"
 config/features=PackedStringArray("4.5", "C#", "Forward Plus")
 config/icon="res://icon.svg"
 
-[display]
+[autoload]
 
-window/size/mode=3
+NetworkManager="*res://Game/Globals/NetworkManager.cs"
 
 [dotnet]
 
@@ -112,7 +112,3 @@ toggle_facing_mode={
 "events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":86,"key_label":0,"unicode":118,"location":0,"echo":false,"script":null)
 ]
 }
-
-[autoload]
-
-NetworkManager="*res://Game/Globals/NetworkManager.cs"

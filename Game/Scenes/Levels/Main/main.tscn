@@ -138,5 +138,5 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
 [node name="PlayerContainer" type="Node" parent="."]
 
 [node name="MultiplayerSpawner" type="MultiplayerSpawner" parent="."]
-_spawnable_scenes = PackedStringArray("res://Game/Scenes/Characters/PlayerCharacter/player_character.tscn")
+_spawnable_scenes = PackedStringArray("uid://t6aywbqoy8fu")
 spawn_path = NodePath("../PlayerContainer")
