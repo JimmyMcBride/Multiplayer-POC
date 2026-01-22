@@ -38,26 +38,6 @@ public partial class Main : Node3D
                 GameConfig.Instance.Port);
     }
 
-    public override void _UnhandledInput(InputEvent @event)
-    {
-        // Press H to host, J to join localhost (for client-mode testing only)
-        if (!GameConfig.Instance.IsServer && @event is InputEventKey { Pressed: true } key)
-        {
-            if (key.Keycode == Key.H && !Multiplayer.HasMultiplayerPeer())
-            {
-                Log.Info("Manual host requested");
-                NetworkManager.Instance.Host(GameConfig.Instance.Port);
-            }
-            else if (key.Keycode == Key.J && !Multiplayer.HasMultiplayerPeer())
-            {
-                Log.Info("Joining localhost...");
-                NetworkManager.Instance.Join(
-                    GameConfig.Instance.ServerAddress,
-                    GameConfig.Instance.Port);
-            }
-        }
-    }
-
     public override void _ExitTree()
     {
         if (NetworkManager.Instance == null) return;
