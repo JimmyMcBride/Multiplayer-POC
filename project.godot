@@ -17,6 +17,7 @@ config/icon="res://icon.svg"
 
 [autoload]
 
+GameConfig="*res://Game/Globals/GameConfig.cs"
 NetworkManager="*res://Game/Globals/NetworkManager.cs"
 
 [dotnet]

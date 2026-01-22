@@ -6,47 +6,54 @@ namespace MultiplayerPOC.Game.Scenes.Levels.Main;
 
 public partial class Main : Node3D
 {
-    [Export] public PackedScene PlayerScene;
-    [Export] public bool AutoHost = true;
-
-    private Node _playerContainer;
+    private Node3D _playerContainer;
     private Marker3D _playerSpawn;
+    private MultiplayerSpawner _spawner;
+    [Export] public PackedScene PlayerScene;
 
     public override void _Ready()
     {
+        _playerContainer = GetNode<Node3D>("PlayerContainer");
         _playerSpawn = GetNode<Marker3D>("PlayerSpawn");
-        _playerContainer = GetNode<Node>("PlayerContainer");
+        _spawner = GetNode<MultiplayerSpawner>("MultiplayerSpawner");
+
+        // Set custom spawn function so we can configure authority properly
+        _spawner.SpawnFunction = new Callable(this, MethodName.SpawnPlayerFromData);
 
         NetworkManager.Instance.ServerStarted += OnServerStarted;
         NetworkManager.Instance.ClientConnected += OnClientConnected;
         NetworkManager.Instance.ClientDisconnected += OnClientDisconnected;
         NetworkManager.Instance.ConnectedToServer += OnConnectedToServer;
 
-        if (AutoHost)
-        {
-            // Try to host, if port is taken, join instead
-            if (NetworkManager.Instance.Host() != Error.Ok)
-            {
-                Log.Info("Port in use - joining existing server instead");
-                NetworkManager.Instance.Join("127.0.0.1");
-            }
-        }
+        StartNetworking();
+    }
+
+    private void StartNetworking()
+    {
+        if (GameConfig.Instance.IsServer)
+            NetworkManager.Instance.Host(GameConfig.Instance.Port);
+        else
+            NetworkManager.Instance.Join(
+                GameConfig.Instance.ServerAddress,
+                GameConfig.Instance.Port);
     }
 
     public override void _UnhandledInput(InputEvent @event)
     {
-        // Press H to host, J to join localhost (for testing)
-        if (@event is InputEventKey { Pressed: true } key)
+        // Press H to host, J to join localhost (for client-mode testing only)
+        if (!GameConfig.Instance.IsServer && @event is InputEventKey { Pressed: true } key)
         {
             if (key.Keycode == Key.H && !Multiplayer.HasMultiplayerPeer())
             {
                 Log.Info("Manual host requested");
-                NetworkManager.Instance.Host();
+                NetworkManager.Instance.Host(GameConfig.Instance.Port);
             }
             else if (key.Keycode == Key.J && !Multiplayer.HasMultiplayerPeer())
             {
                 Log.Info("Joining localhost...");
-                NetworkManager.Instance.Join("127.0.0.1");
+                NetworkManager.Instance.Join(
+                    GameConfig.Instance.ServerAddress,
+                    GameConfig.Instance.Port);
             }
         }
     }
@@ -62,8 +69,8 @@ public partial class Main : Node3D
 
     private void OnServerStarted()
     {
-        Log.Info("Server started - spawning host player");
-        SpawnPlayer(1);
+        Log.Info("Server started");
+        // Dedicated server has no player - players are spawned when clients connect
     }
 
     private void OnClientConnected(long peerId)
@@ -87,17 +94,20 @@ public partial class Main : Node3D
 
     private void SpawnPlayer(int peerId)
     {
+        // Use spawner.Spawn() with peer ID as data - the spawn function handles instantiation
+        _spawner.Spawn(peerId);
+        Log.Info($"Spawned player for peer {peerId}");
+    }
+
+    // Called by MultiplayerSpawner - returns configured node to be added to spawn_path
+    private Node SpawnPlayerFromData(Variant data)
+    {
+        var peerId = data.AsInt32();
         var player = PlayerScene.Instantiate<CharacterBody3D>();
         player.Name = $"Player_{peerId}";
-        player.SetMultiplayerAuthority(peerId);  // Set authority BEFORE adding to tree
-
-        _playerContainer.AddChild(player, true);
-
-        var spawnPosition = _playerSpawn.GlobalPosition;
-        spawnPosition.Y += 0.5f;  // Spawn above ground to avoid clipping
-        player.GlobalPosition = spawnPosition;
-
-        Log.Info($"Spawned player for peer {peerId}");
+        player.SetMultiplayerAuthority(peerId);
+        player.Position = _playerSpawn.Position;
+        return player;
     }
 
     private void DespawnPlayer(int peerId)

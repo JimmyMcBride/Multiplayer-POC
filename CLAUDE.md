@@ -11,10 +11,32 @@
 ## Quick Start
 
 ```bash
-godot --path .           # Run game
 godot --path . --editor  # Open editor
 dotnet build             # Build C# only
 ```
+
+## Running the Game
+
+### Dedicated Server
+```bash
+godot --path . --server                    # With UI (debug)
+godot --path . --headless --server         # Headless (production)
+godot --path . --server --port=9999        # Custom port
+```
+
+### Client
+```bash
+godot --path .                             # Connect to localhost:7777
+godot --path . --address=192.168.1.100     # Connect to specific server
+godot --path . --address=<ip> --port=9999  # Custom address and port
+```
+
+### Command-Line Arguments
+| Argument | Default | Description |
+|----------|---------|-------------|
+| `--server` | (client mode) | Run as dedicated server |
+| `--address=<ip>` | `127.0.0.1` | Server address for clients |
+| `--port=<port>` | `7777` | Network port |
 
 ## Project Structure
 
@@ -39,6 +61,8 @@ ClaudeInstructions/  # Detailed guides (load on-demand)
 | `Game/Scenes/Characters/PlayerCharacter/PlayerState.cs` | Base state class |
 | `Game/Scenes/Characters/PlayerCharacter/States/*.cs` | Individual states |
 | `Game/Globals/Constants/InputAction.cs` | Input action names |
+| `Game/Globals/GameConfig.cs` | Command-line args, game mode (server/client) |
+| `Game/Globals/NetworkManager.cs` | Multiplayer networking |
 | `Engine/Core/Log.cs` | Logging utility |
 | `project.godot` | Project settings, input mappings |
 
@@ -48,6 +72,7 @@ ClaudeInstructions/  # Detailed guides (load on-demand)
 using Godot;
 using MultiplayerPOC.Engine.Core;                    // Log
 using MultiplayerPOC.Engine.Godot;                   // Extensions (SetX, SetY, etc.)
+using MultiplayerPOC.Game.Globals;                   // GameConfig, NetworkManager
 using MultiplayerPOC.Game.Globals.Constants;         // InputAction
 using MultiplayerPOC.Game.Scenes.Characters.PlayerCharacter;            // PlayerState, StateMachine
 using MultiplayerPOC.Game.Scenes.Characters.PlayerCharacter.States;     // Idle, Move, Jump, Dash...

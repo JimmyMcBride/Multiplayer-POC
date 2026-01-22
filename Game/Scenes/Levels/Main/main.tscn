@@ -34,6 +34,12 @@ shadow_enabled = true
 [node name="WorldEnvironment" type="WorldEnvironment" parent="Environment"]
 environment = SubResource("Environment_0e40a")
 
+[node name="PlayerSpawn" type="Marker3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
+
+[node name="PlayerContainer" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
+
 [node name="Level" type="Node" parent="."]
 
 [node name="Floor" type="CSGBox3D" parent="Level"]
@@ -131,11 +137,6 @@ transform = Transform3D(0.9999999, 0, 0, 0, 0.9469355, -0.32142287, 0, 0.3214228
 use_collision = true
 size = Vector3(3.2350006, 0.25, 27.234802)
 material = ExtResource("3_6wmdx")
-
-[node name="PlayerSpawn" type="Marker3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
-
-[node name="PlayerContainer" type="Node" parent="."]
 
 [node name="MultiplayerSpawner" type="MultiplayerSpawner" parent="."]
 _spawnable_scenes = PackedStringArray("uid://t6aywbqoy8fu")

@@ -29,6 +29,16 @@ public partial class PlayerCharacter : CharacterBody3D
         return MovementComponent.GetMovementDirection(inputDir);
     }
 
+    public override void _EnterTree()
+    {
+        base._EnterTree();
+
+        // Determine locality from node name (Player_{peerId})
+        // Authority is set by server in Main.SpawnPlayer before adding to tree
+        var myPeerId = Multiplayer.GetUniqueId();
+        IsLocalPlayer = Name == $"Player_{myPeerId}";
+    }
+
     public override void _Ready()
     {
         CameraComponent = GetNode<CameraComponent>("CameraComponent");
@@ -36,15 +46,11 @@ public partial class PlayerCharacter : CharacterBody3D
         Pivot = GetNode<Node3D>("Pivot");
         _stateMachine = GetNode<StateMachine>("StateMachine");
 
-        // Determine locality from node name (Player_{peerId}) since MultiplayerSpawner doesn't preserve authority
         var myPeerId = Multiplayer.GetUniqueId();
-        IsLocalPlayer = Name == $"Player_{myPeerId}";
-
         Log.Info($"PlayerCharacter._Ready: {Name}, IsLocal={IsLocalPlayer}, MyPeerId={myPeerId}");
 
         if (IsLocalPlayer)
         {
-            SetMultiplayerAuthority(myPeerId);
             Log.Info($"Initializing as LOCAL player: {Name}");
             CameraComponent.Initialize(this);
             CameraComponent.MakeCurrent();
