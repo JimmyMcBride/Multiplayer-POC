@@ -15,6 +15,17 @@ public partial class NetworkManager : Node
     public bool IsClient => !Multiplayer.IsServer() && Multiplayer.HasMultiplayerPeer();
     public int LocalPeerId => Multiplayer.GetUniqueId();
 
+    public int GetPing()
+    {
+        if (_peer == null || !IsClient) return 0;
+
+        // Peer ID 1 is always the server
+        var serverPeer = _peer.GetPeer(1);
+        if (serverPeer == null) return 0;
+
+        return (int)serverPeer.GetStatistic(ENetPacketPeer.PeerStatistic.RoundTripTime);
+    }
+
     [Signal] public delegate void ServerStartedEventHandler();
     [Signal] public delegate void ClientConnectedEventHandler(long peerId);
     [Signal] public delegate void ClientDisconnectedEventHandler(long peerId);

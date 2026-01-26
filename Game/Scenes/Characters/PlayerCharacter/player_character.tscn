@@ -1,4 +1,4 @@
-[gd_scene load_steps=22 format=4 uid="uid://t6aywbqoy8fu"]
+[gd_scene load_steps=23 format=4 uid="uid://t6aywbqoy8fu"]
 
 [ext_resource type="PackedScene" uid="uid://cthcanx681lhu" path="res://Game/Scenes/Characters/PlayerCharacter/Components/camera_component.tscn" id="1_6w4jp"]
 [ext_resource type="Script" uid="uid://btx2ynqitbgcm" path="res://Game/Scenes/Characters/PlayerCharacter/PlayerCharacter.cs" id="1_l2uon"]
@@ -13,6 +13,7 @@
 [ext_resource type="Script" uid="uid://b5a2icv8lwwbh" path="res://Game/Scenes/Characters/PlayerCharacter/States/Dash.cs" id="10_c1ury"]
 [ext_resource type="Script" uid="uid://d0e2mnevpjuh" path="res://Game/Scenes/Characters/PlayerCharacter/States/Sprint.cs" id="11_tbu4w"]
 [ext_resource type="Texture2D" uid="uid://d2yiko54pxel1" path="res://Assets/kenney_crosshair-pack/Tilesheet/crosshairs_tilesheet_white.png" id="13_x4iks"]
+[ext_resource type="Script" path="res://Game/Scenes/Characters/PlayerCharacter/Components/DebugStatsWidget.cs" id="14_debug"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_laqd5"]
 
@@ -150,3 +151,26 @@ grow_vertical = 2
 texture = ExtResource("13_x4iks")
 hframes = 20
 vframes = 10
+
+[node name="DebugStatsWidget" type="Control" parent="UI"]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 10.0
+offset_top = -50.0
+offset_right = 150.0
+offset_bottom = -10.0
+grow_vertical = 0
+script = ExtResource("14_debug")
+
+[node name="Label" type="Label" parent="UI/DebugStatsWidget"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_fonts/font = null
+text = "FPS: --
+Ping: --ms"
